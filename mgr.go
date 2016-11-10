@@ -12,6 +12,7 @@ const (
 type Task interface {
 	Do() error
 	String() string
+	Begin()
 	Benchmark() string
 }
 
@@ -48,6 +49,7 @@ func (this *TaskMgr) Run() {
 			default:
 			}
 			go func() {
+				t.Begin()
 				err := t.Do()
 				if err != nil {
 					select {

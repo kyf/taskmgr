@@ -13,7 +13,6 @@ type DemoTask struct {
 }
 
 func (this *DemoTask) Do() error {
-	this.Begin()
 	time.Sleep(time.Second * 5)
 	return errors.New("demo testing error")
 }
