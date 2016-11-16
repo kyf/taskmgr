@@ -17,16 +17,16 @@ type Task interface {
 }
 
 type Bench struct {
-	ts1 string
+	ts1 int64
 }
 
 func (this *Bench) Begin() {
-	this.ts1 = time.Now().Format(DATE_LAYOUT)
+	this.ts1 = time.Now().Unix()
 }
 
 func (this *Bench) Benchmark() string {
-	now := time.Now().Format(DATE_LAYOUT)
-	return fmt.Sprintf("%s~%s", this.ts1, now)
+	bench := time.Now().Unix() - this.ts1
+	return humanTime(bench)
 }
 
 type TaskMgr struct {
@@ -75,4 +75,21 @@ func (this *TaskMgr) Run() {
 
 func (this *TaskMgr) Stop() {
 	close(this.exit)
+}
+
+func humanTime(t int64) string {
+	switch {
+	case t < 60:
+		return fmt.Sprintf("%d秒", t)
+	case t > 60 && t < 3600:
+		m := t / 60
+		s := t % 60
+		return fmt.Sprintf("%d分%d秒", m, s)
+	case t > 3600:
+		h := t / 3600
+		m := (t - h*3600) / 60
+		s := (t - h*3600) % 60
+		return fmt.Sprintf("%d时%d分%d秒", h, m, s)
+	}
+	return ""
 }
